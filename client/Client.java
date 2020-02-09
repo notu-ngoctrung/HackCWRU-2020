@@ -13,10 +13,11 @@ public class Client {
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 600;
 	private static final String ADDRESS = "192.168.43.60"
-	private static final Robot robot = new Robot();
-	private boolean isActive = false;
+	private static Robot robot;
+	private static boolean isActive = false;
 
-    public static void main(String[] args) throws UnknownHostException, IOException {
+    public static void main(String[] args) throws UnknownHostException, IOException, AWTException {
+		robot = new Robot();
         Command command = new Command(Command.CType.HAND, "First Name", "Last Name", WIDTH, HEIGHT);
         Socket client = new Socket(ADDRESS, PORT);
         //BufferedReader input =
@@ -28,13 +29,11 @@ public class Client {
         output.write(command.getBytes());
 		output.flush();
         
-		//Robot robot = new Robot();
 		BufferedImage image;
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		byte[] imageBytes, data;
 		while (true) {
 			if (!isActive) {
-				// TODO Does this really work?
 				data = new byte[input.readInt()];
 				input.readFully(data, 0, data.length);
 				command = new Command(new String(data))
@@ -68,9 +67,6 @@ public class Client {
 				default: break;
 			}
         }
-        else
-          continue;
-      }
       // Send screen buffer to controller (server)
       image = robot.createScreenCapture(new Rectangle(0, 0, WIDTH, HEIGHT));
       ImageIO.write(image, "jpg", bos);
@@ -79,6 +75,7 @@ public class Client {
       byte[] temp = command.getBytes();
       output.write(Command.intToByteArray(temp.length));
       output.write(temp);
+	  output.flush();
       output.write(imageBytes);
       bos.reset(); // to make room for next BufferedImage
       
@@ -86,8 +83,8 @@ public class Client {
       String[] arg = command.getArgs();
       switch (command.getType()) {
         case "MOVE": move(Integer.parseInt(arg[0]), Integer.parseInt(arg[1]));
-        case "CLCK": click(arg[0] == "0" ? false : true, Integer.parseInt(arg[1]));
-        case "KEYB": keyboard(arg[0] == "0" ? false : true, Integer.parseInt(arg[1]));
+        case "CLCK": click(arg[0] == "0" ? true : false, Integer.parseInt(arg[1]));
+        case "KEYB": keyboard(arg[0] == "0" ? true : false, Integer.parseInt(arg[1]));
         case "GBYE": isActive = false;
         default: break;
       }
@@ -112,6 +109,4 @@ public class Client {
     else
       robot.keyRelease(keycode); 
   }
-  
-  
 }
