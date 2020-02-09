@@ -1,6 +1,7 @@
 package server;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
@@ -73,7 +74,7 @@ public class Main extends Application {
         }
     }
 
-    public void addNewStudent(Socket client) {
+    public void addNewStudent(Socket client) throws InterruptedException {
         students.add(new Student(client));
         Student student = students.get(students.size() - 1);
         student.updateIndex(students.size() - 1);
@@ -95,14 +96,15 @@ public class Main extends Application {
         }));
         /** GUI */
         HBox studentBox = new HBox();
-        studentBox.setPadding(new Insets(10, 0, 10, 15));
+        studentBox.setPadding(new Insets(10, 0, 10, 10));
         studentBox.setBackground(new Background(new BackgroundFill(Color.rgb(54, 56, 61), CornerRadii.EMPTY, Insets.EMPTY)));
-        Rectangle studentAva = new Rectangle(80, 80, new ImagePattern(new Image("/image/studentAva.jpg"), 0, 0, 80, 80, true));
+        Rectangle studentAva = new Rectangle(50, 50, new ImagePattern(new Image("/image/studentAva.png")));
         Label studentName = new Label(student.getName());
-        studentName.setPadding(new Insets(10, 0, 10, 10));
+        studentName.setPadding(new Insets(10, 0, 10, 5));
         studentName.setTextFill(Color.WHITE);
         studentBox.getChildren().add(studentAva);
         studentBox.getChildren().add(studentName);
+        System.out.println("ajajfsdkfdf");
         studentBox.setOnMouseClicked(e -> {
             if (currentIndex != -1)
                 students.get(currentIndex).sendGoodBye();
@@ -115,7 +117,9 @@ public class Main extends Application {
             }
             students.get(currentIndex).sendStart();
         });
-        studentPane.getChildren().add(studentBox);
+        Platform.runLater(() -> {
+            studentPane.getChildren().add(studentBox);
+        });
     }
 
     public int normXCord(double originalX, int studentIndex) {
@@ -151,7 +155,7 @@ public class Main extends Application {
                     Socket newClient = serverSocket.accept();
                     addNewStudent(newClient);
                 }
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         });
