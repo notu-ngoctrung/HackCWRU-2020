@@ -14,7 +14,7 @@ public class Client {
 	private boolean isActive = false;
 
     public static void main(String[] args) throws UnknownHostException, IOException {
-        Command command = new Command(Command.CType.HAND, "First Name", "Last Name");
+        Command command = new Command(Command.CType.HAND, "First Name", "Last Name", WIDTH, HEIGHT);
         Socket client = new Socket("localhost", PORT);
         BufferedReader input =
 			new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -42,7 +42,7 @@ public class Client {
 			image = robot.createScreenCapture(new Rectangle(0, 0, WIDTH, HEIGHT));
 			ImageIO.write(image, "jpg", bos);
 			imageBytes = bos.toByteArray();
-			command = new Command(Command.CType.SCRN, WIDTH, HEIGHT, imageBytes.length);
+			command = new Command(Command.CType.SCRN, imageBytes.length);
 			byte[] temp = command.getBytes();
 			output.write(Command.intToByteArray(temp.length));
 			output.write(temp);

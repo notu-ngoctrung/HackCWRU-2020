@@ -6,12 +6,12 @@ public class Command {
     int length;
 
     public enum CType {
-        HAND (2),
+        HAND (4),
         STRT (0), 
         MOVE (2), 
         CLCK (1), 
         KEYB (2),
-        SCRN (3),
+        SCRN (1),
         GBYE (0);
 
         final int numArgs;
