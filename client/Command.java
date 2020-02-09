@@ -32,9 +32,12 @@ public class Command {
     public Command(String string) {
         String[] stuff = string.split(" ");
         // Cross check types
+		cargs = new String[stuff.length - 1];
 		for (CType types : CType.values())
-			if (types.toString() == stuff[0])
-				this(types, Arrays.copyOfRange(stuff, 1, stuff.length);
+			if (types.toString().equals(stuff[0]))
+				this.type = types;
+		for (int i=1; i<stuff.length; ++i)
+			cargs[i - 1] = stuff[i];
     }
 
     public String stringify() {
@@ -70,7 +73,7 @@ public class Command {
 			(byte)(value >>> 24),
 			(byte)(value >>> 16),
 			(byte)(value >>> 8), 
-			(byte)value}; }
+			(byte)value}; 
 	}
 
 	public String getArgAt(int index) {	
