@@ -19,23 +19,25 @@ public class Client {
     public static void main(String[] args) throws UnknownHostException, IOException {
         Command command = new Command(Command.CType.HAND, "First Name", "Last Name", WIDTH, HEIGHT);
         Socket client = new Socket(ADDRESS, PORT);
-        BufferedReader input =
-			new BufferedReader(new InputStreamReader(client.getInputStream()));
+        //BufferedReader input =
+			//new BufferedReader(new InputStreamReader(client.getInputStream()));
+		DataInputStream input = new DataInputStream(client.getInputStream());
         DataOutputStream output = new DataOutputStream(client.getOutputStream());
 		
 		output.write(Command.intToByteArray(command.getBytes().length));
-		output.flush();
         output.write(command.getBytes());
 		output.flush();
         
 		//Robot robot = new Robot();
 		BufferedImage image;
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		byte[] imageBytes;
+		byte[] imageBytes, data;
 		while (true) {
 			if (!isActive) {
 				// TODO Does this really work?
-				command = new Command(input.readLine());
+				data = new byte[input.readInt()];
+				input.readFully(data, 0, data.length);
+				command = new Command(new String(data))
 				if (command.getType() == "STRT") {
 					isActive = true;
 					System.out.println("Starting remote control");
@@ -54,7 +56,9 @@ public class Client {
 			output.write(imageBytes);
 			bos.reset(); // to make room for next BufferedImage
 
-			command = new Command(input.readLine());
+			data = new byte[input.readInt()];
+			input.readFully(data, 0, data.length);
+			command = new Command(new String(data));
 			String[] arg = command.getArgs();
 			switch (command.getType()) {
 				case "MOVE": move(Integer.parseInt(arg[0]), Integer.parseInt(arg[1]));
