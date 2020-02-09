@@ -9,7 +9,6 @@ import java.awt.Robot;
 import javax.imageio.ImageIO;
 
 public class Client {
-<<<<<<< HEAD
     private static final int PORT = 6969;
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 600;
@@ -25,7 +24,9 @@ public class Client {
         DataOutputStream output = new DataOutputStream(client.getOutputStream());
 		
 		output.write(Command.intToByteArray(command.getBytes().length));
+		output.flush();
         output.write(command.getBytes());
+		output.flush();
         
 		//Robot robot = new Robot();
 		BufferedImage image;
@@ -62,41 +63,6 @@ public class Client {
 				case "GBYE": isActive = false;
 				default: break;
 			}
-=======
-  private static final int PORT = 6969;
-  private static final int WIDTH = 800;
-  private static final int HEIGHT = 600;
-  private static Robot robot;
-  private static boolean isActive = false;
-  
-  public static void main(String[] args) throws UnknownHostException, IOException {
-    try {
-      robot = new Robot();
-    } catch (AWTException e) {
-      e.printStackTrace();
-    }
-    Command command = new Command(Command.CType.HAND, "First Name", "Last Name", Integer.toString(WIDTH), Integer.toString(HEIGHT));
-    Socket client = new Socket("localhost", PORT);
-    
-    BufferedReader input =
-      new BufferedReader(new InputStreamReader(client.getInputStream()));
-    DataOutputStream output = new DataOutputStream(client.getOutputStream());
-    
-    //output.write(Command.intToByteArray(command.getBytes().length));
-    output.write(command.getBytes());
-    
-    //Robot robot = new Robot();
-    BufferedImage image;
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    byte[] imageBytes;
-    while (true) {
-      if (!isActive) {
-        // TODO Does this really work?
-        command = new Command(input.readLine());
-        if (command.getType() == "STRT") {
-          isActive = true;
-          System.out.println("Starting remote control");
->>>>>>> 49f0d90933ff6b096784ad0128b006f99bf2f09c
         }
         else
           continue;
