@@ -9,7 +9,7 @@ public class Command {
         MOVE (2), 
         CLCK (1), 
         KEYB (2),
-        SCRN (2),
+        SCRN (3),
         GBYE (0);
 
         final int numArgs;
@@ -61,5 +61,13 @@ public class Command {
 
 	public String[] getArgs() {
 		return cargs;
+	}
+
+	public static final byte[] intToByteArray(int value) {
+		return new byte[] { 
+			(byte)(value >>> 24),
+			(byte)(value >>> 16),
+			(byte)(value >>> 8), 
+			(byte)value}; }
 	}
 }
