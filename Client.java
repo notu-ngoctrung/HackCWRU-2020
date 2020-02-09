@@ -8,7 +8,7 @@ public class Client {
     private static final int PORT = 6969;
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 600;
-	private static Robot robot = new Robot();
+	private static final Robot robot = new Robot();
 	private boolean isActive = false;
 
     public static void main(String[] args) throws UnknownHostException, IOException {
@@ -27,9 +27,12 @@ public class Client {
 		byte[] imageBytes;
 		while (true) {
 			if (!isActive) {
+				// TODO Does this really work?
 				command = new Command(input.readLine());
-				if (command.getType() == "STRT")
+				if (command.getType() == "STRT") {
 					isActive = true;
+					System.out.println("Starting remote control");
+				}
 				else
 					continue;
 			}
@@ -47,12 +50,33 @@ public class Client {
 			command = new Command(input.readLine());
 			String[] arg = command.getArgs();
 			switch (command.getType()) {
-				case "MOVE": move(arg[0], arg[1]);
-				case "CLCK": // mouse click
-				case "KEYB": // keyboard press
-				case "GBYE": // disconnect
+				case "MOVE": move(Integer.parseInt(arg[0]), Integer.parseInt(arg[1]));
+				case "CLCK": click(arg[0] == "0" ? false : true, Integer.parseInt(arg[1]));
+				case "KEYB": keyboard(arg[0] == "0" ? false : true, Integer.parseInt(arg[1]));
+				case "GBYE": isActive = false;
 				default: break;
 			}
         }
     }
+
+	public void move(int x, int y) {
+		robot.mouseMove(x, y);
+	}
+
+	public void click(boolean isRelease, int mask) {
+		// A Mask is defined as InputEvent.BUTTON1_MASK and so on.
+		if (isRelease)
+			robot.mouseRelease(mask);
+		else
+			robot.mousePress(mask);
+	}
+
+	public void keyboard(boolean isRelease, int keycode) {
+		if (isRelease)
+			robot.keyPress(keycode);
+		else
+			robot.keyRelease(keycode);	
+	}
+
+
 }
