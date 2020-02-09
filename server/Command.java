@@ -1,4 +1,4 @@
-package client;
+package server;
 
 public class Command {
     CType type;
@@ -7,9 +7,9 @@ public class Command {
 
     public enum CType {
         HAND (4),
-        STRT (0), 
-        MOVE (2), 
-        CLCK (1), 
+        STRT (0),
+        MOVE (2),
+        CLCK (1),
         KEYB (2),
         SCRN (1),
         GBYE (0);
@@ -32,9 +32,15 @@ public class Command {
     public Command(String string) {
         String[] stuff = string.split(" ");
         // Cross check types
-		for (CType types : CType.values())
-			if (types.toString() == stuff[0])
-				this(types, Arrays.copyOfRange(stuff, 1, stuff.length);
+        for (CType types : CType.values())
+            if (types.toString().equals(stuff[0])) {
+                this.type = types;
+                break;
+            }
+
+        cargs = new String[stuff.length - 1];
+        for (int i=1; i<stuff.length; ++i)
+            cargs[i-1] = stuff[i];
     }
 
     public String stringify() {
@@ -57,23 +63,22 @@ public class Command {
         return name.replaceAll("\\s", "-");
     }
 
-	public String getType() {
-		return type.toString();
-	}
+    public String getType() {
+        return type.toString();
+    }
 
-	public String[] getArgs() {
-		return cargs;
-	}
+    public String[] getArgs() {
+        return cargs;
+    }
 
-	public static final byte[] intToByteArray(int value) {
-		return new byte[] { 
-			(byte)(value >>> 24),
-			(byte)(value >>> 16),
-			(byte)(value >>> 8), 
-			(byte)value}; }
-	}
+    public static final byte[] intToByteArray(int value) {
+        return new byte[] {
+                (byte)(value >>> 24),
+                (byte)(value >>> 16),
+                (byte)(value >>> 8),
+                (byte)value}; }
 
-	public String getArgAt(int index) {	
+    public String getArgAt(int index) {
         return getArgs()[index];
-	}	
+    }
 }

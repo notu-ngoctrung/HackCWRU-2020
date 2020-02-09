@@ -17,6 +17,8 @@ public class Student {
 
     private DataOutputStream sender;
 
+    private int width, height, index;
+
     public Student(Socket socket) {
         this.socket = socket;
         try {
@@ -29,12 +31,50 @@ public class Student {
 
     public void addThread(Thread thread) {
         this.thread = thread;
-        this.thread.run();
+        this.thread.start();
     }
 
     public void updateName(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public void updateDimension(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    public void updateIndex(int index) {
+        this.index = index;
+    }
+
+    public void toSend(byte[] dataToSend) {
+        try {
+            sender.writeInt(dataToSend.length);
+            sender.write(dataToSend);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendMouseInfo(int posX, int posY) {
+        String strToSend = "MOVE " + Integer.toString(posX) + " " + Integer.toString(posY);
+        toSend(strToSend.getBytes());
+    }
+
+    public void sendMousePressed(int value) {
+        String strToSend = "CLCK " + Integer.toString(value);
+        toSend(strToSend.getBytes());
+    }
+
+    public void sendGoodBye() {
+        String strToSend = "GBYE";
+        toSend(strToSend.getBytes());
+    }
+
+    public void sendStart() {
+        String strToSend = "STRT";
+        toSend(strToSend.getBytes());
     }
 
     public DataInputStream getReceiver() {
@@ -43,5 +83,21 @@ public class Student {
 
     public DataOutputStream getSender() {
         return sender;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public String getName() {
+        return firstName + " " + lastName;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }
