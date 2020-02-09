@@ -10,12 +10,13 @@ public class Client {
     private static final int PORT = 6969;
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 600;
+	private static final String ADDRESS = "192.168.43.60"
 	private static final Robot robot = new Robot();
 	private boolean isActive = false;
 
     public static void main(String[] args) throws UnknownHostException, IOException {
         Command command = new Command(Command.CType.HAND, "First Name", "Last Name", WIDTH, HEIGHT);
-        Socket client = new Socket("localhost", PORT);
+        Socket client = new Socket(ADDRESS, PORT);
         BufferedReader input =
 			new BufferedReader(new InputStreamReader(client.getInputStream()));
         DataOutputStream output = new DataOutputStream(client.getOutputStream());
