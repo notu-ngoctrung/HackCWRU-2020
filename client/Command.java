@@ -34,7 +34,7 @@ public class Command {
         // Cross check types
 		for (CType types : CType.values())
 			if (types.toString() == stuff[0])
-				return new Command(types, Arrays.copyOfRange(stuff, 1, stuff.length);
+				this(types, Arrays.copyOfRange(stuff, 1, stuff.length);
     }
 
     public String stringify() {
