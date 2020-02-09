@@ -1,30 +1,30 @@
-package server;
-
-import java.util.Arrays;
-
 public class Command {
     CType type;
     String[] cargs;
     int length;
 
     public enum CType {
-        HAND(2),
-        STRT(0),
-        MOVE(2),
-        CLCK(1),
-        KEYB(2),
-        SCRN(2),
-        GBYE(0);
+        HAND (2),
+        STRT (0), 
+        MOVE (2), 
+        CLCK (1), 
+        KEYB (2),
+        SCRN (3),
+        GBYE (0);
 
         final int numArgs;
-
         CType(int numArgs) {
             this.numArgs = numArgs;
         }
     }
 
     public Command(CType type, String... arg) {
-        CommandHelper(type, arg);
+        this.type = type;
+        if (type.numArgs != arg.length)
+            throw new IllegalArgumentException("Command " + type.toString() + " needs " + type.numArgs + " arguments");
+        cargs = new String[type.numArgs];
+        for (int i=0; i<arg.length; ++i)
+            cargs[i] = Command.nameSanitize(arg[i]);
     }
 
     public Command(String string) {
@@ -32,16 +32,7 @@ public class Command {
         // Cross check types
 		for (CType types : CType.values())
 			if (types.toString() == stuff[0])
-				CommandHelper(types, Arrays.copyOfRange(stuff, 1, stuff.length));
-    }
-
-    public void CommandHelper(CType type, String... arg) {
-        this.type = type;
-        if (type.numArgs != arg.length)
-            throw new IllegalArgumentException("Command " + type.toString() + " needs " + type.numArgs + " arguments");
-        cargs = new String[type.numArgs];
-        for (int i=0; i<arg.length; ++i)
-            cargs[i] = Command.nameSanitize(arg[i]);
+				return new Command(types, Arrays.copyOfRange(stuff, 1, stuff.length);
     }
 
     public String stringify() {
@@ -72,7 +63,14 @@ public class Command {
 		return cargs;
 	}
 
-	public String getArgAt(int index) {
-        return getArgs()[index];
-    }
+	public static final byte[] intToByteArray(int value) {
+		return new byte[] { 
+			(byte)(value >>> 24),
+			(byte)(value >>> 16),
+			(byte)(value >>> 8), 
+			(byte)value}; }
+	}
+
+	public String getArgAt(int index) {																				return getArgs()[index];
+	}	
 }

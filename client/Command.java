@@ -1,3 +1,5 @@
+package client;
+
 public class Command {
     CType type;
     String[] cargs;
@@ -70,4 +72,7 @@ public class Command {
 			(byte)(value >>> 8), 
 			(byte)value}; }
 	}
+
+	public String getArgAt(int index) {																				return getArgs()[index];
+	}	
 }
